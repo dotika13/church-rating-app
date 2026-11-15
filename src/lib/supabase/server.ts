@@ -1,5 +1,5 @@
-import { createServerClient, type CookieOptions } from "@supabase/ssr";
-import { cookies } from "next/headers";
+import { createServerClient, type CookieOptions } from '@supabase/ssr';
+import { cookies } from 'next/headers';
 
 export async function createServerSupabaseClient() {
   const cookieStore = await cookies();
@@ -20,8 +20,8 @@ export async function createServerSupabaseClient() {
           } catch {
             // Server Component - ignore
           }
-        }
-      }
+        },
+      },
     }
   );
 }
