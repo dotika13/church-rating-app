@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
+import { Toaster } from 'sonner';
 import './globals.css';
 import { QueryProvider } from '@/components/providers/QueryProvider';
 
@@ -33,6 +34,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="min-h-screen bg-background text-foreground">
         <QueryProvider>{children}</QueryProvider>
+        <Toaster position="bottom-right" theme="system" />
       </body>
     </html>
   );
