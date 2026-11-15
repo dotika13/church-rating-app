@@ -15,7 +15,6 @@ export default function JoinPage() {
   const router = useRouter();
   const params = useParams();
   const [code, setCode] = useState("");
-  const [groupId, setGroupId] = useState("");
   const joinGroup = useJoinGroup();
   const supabase = createClient();
   const urlCode = params.code as string;
@@ -37,19 +36,24 @@ export default function JoinPage() {
 
   const handleJoin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!code || !groupId) return;
+    if (!code) return;
 
-    joinGroup.mutate({ groupId, inviteCode: code }, {
-      onSuccess: () => {
-        toast.success("Joined group!");
-        router.push("/dashboard/groups");
-      },
-      onError: () => toast.error("Invalid invite code or already a member")
-    });
+    const inviteCode = code.toUpperCase();
+
+    try {
+      // Resolve group ID from invite code
+      const res = await fetch(`/api/groups/by-invite/${inviteCode}`);
+      if (!res.ok) throw new Error("Invalid invite code");
+      const { group } = await res.json();
+
+      await joinGroup.mutateAsync({ groupId: group.id, inviteCode });
+      toast.success("Joined group!");
+      router.push(`/groups/${group.id}`);
+    } catch {
+      toast.error("Invalid or expired invite code");
+    }
   };
 
-  // We need to resolve the group ID from the invite code
-  // This would ideally be done server-side, but for now we'll use a simple approach
   const handleCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCode(e.target.value.toUpperCase());
   };
