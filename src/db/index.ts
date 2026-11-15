@@ -6,7 +6,23 @@ const globalForDb = globalThis as unknown as {
   conn: postgres.Sql | undefined;
 };
 
-const conn = globalForDb.conn ?? postgres(process.env.DATABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL!.replace("https://", "postgresql://postgres:") + "/postgres", {
+function getConnectionString() {
+  if (process.env.DATABASE_URL) return process.env.DATABASE_URL;
+  if (process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    // During build, we may not have the full Supabase URL format
+    // Supabase URL: https://<project>.supabase.co -> postgresql://postgres:<password>@db.<project>.supabase.co:5432/postgres
+    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    if (url.includes("supabase.co")) {
+      const projectRef = url.replace("https://", "").replace(".supabase.co", "");
+      return `postgresql://postgres:${process.env.SUPABASE_DB_PASSWORD || "password"}@db.${projectRef}.supabase.co:5432/postgres`;
+    }
+    return url.replace("https://", "postgresql://postgres:") + "/postgres";
+  }
+  // Fallback for build time
+  return "postgresql://postgres:postgres@localhost:5432/postgres";
+}
+
+const conn = globalForDb.conn ?? postgres(getConnectionString(), {
   prepare: false
 });
 
