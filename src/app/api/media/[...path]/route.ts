@@ -10,6 +10,46 @@ export async function GET(
 
   const supabase = await createServerSupabaseClient();
 
+  // Get authenticated user
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  // Parse path: churches/{churchId}/{filename}
+  const pathParts = storagePath.split("/");
+  if (pathParts.length < 2 || pathParts[0] !== "churches") {
+    return NextResponse.json({ error: "Invalid path" }, { status: 400 });
+  }
+
+  const churchId = pathParts[1];
+
+  // Check if church exists and is accessible
+  const { data: church, error: churchError } = await supabase
+    .from("churches")
+    .select("id, group_id")
+    .eq("id", churchId)
+    .single();
+
+  if (churchError || !church) {
+    return NextResponse.json({ error: "Not found" }, { status: 404 });
+  }
+
+  // If church has a group, verify user is a member
+  if (church.group_id) {
+    const { data: membership, error: memberError } = await supabase
+      .from("group_members")
+      .select("id")
+      .eq("group_id", church.group_id)
+      .eq("user_id", user.id)
+      .single();
+
+    if (memberError || !membership) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+  }
+  // Public churches (no group_id) are accessible to all authenticated users
+
   // Get file from Supabase Storage
   const { data, error } = await supabase.storage.from("church-media").download(storagePath);
 

@@ -12,10 +12,16 @@ import { toast } from "sonner";
 import { MailIcon, LockIcon, GithubIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+function validateRedirect(next: string | null): string {
+  if (!next) return "/groups";
+  if (!next.startsWith("/") || next.startsWith("//")) return "/groups";
+  return next;
+}
+
 export function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const redirectTo = searchParams.get("next") || "/groups";
+  const redirectTo = validateRedirect(searchParams.get("next"));
   const supabase = createClient();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
