@@ -7,10 +7,11 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Church } from "@/db/schema";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import Link from "next/link";
 import { RatingSummary } from "@/components/rating/RatingSummary";
 import { useMyRating } from "@/hooks/useChurches";
 import { useRealtimeRatings } from "@/hooks/useRealtimeRatings";
+import { MediaGallery } from "@/components/media/MediaGallery";
+import { MediaUploader } from "@/components/media/MediaUploader";
 
 interface ChurchModalProps {
   church: (Church & {
@@ -104,22 +105,14 @@ export function ChurchModal({ church, onClose }: ChurchModalProps) {
           </TabsContent>
 
           <TabsContent value="media" className="p-4 overflow-y-auto">
-            <div className="space-y-4 text-center py-8">
-              {church.media && church.media.length > 0 ? (
-                <div className="grid grid-cols-2 gap-4">
-                  {church.media.map((m: any, i: number) => (
-                    <div key={i} className="aspect-video rounded-lg overflow-hidden bg-muted">
-                      <img
-                        src={`/api/media/proxy?path=${m.storagePath}&w=400&h=300&fit=cover`}
-                        alt={`${church.name} ${i + 1}`}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-muted-foreground">No media uploaded yet</p>
-              )}
+            <MediaGallery
+              media={church.media || []}
+              churchId={church.id}
+              onUploadClick={() => {}}
+              onMediaClick={() => {}}
+            />
+            <div className="mt-4 border-t pt-4">
+              <MediaUploader churchId={church.id} />
             </div>
           </TabsContent>
         </Tabs>
