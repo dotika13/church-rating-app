@@ -1,0 +1,110 @@
+@import "tailwindcss";
+@import "@fontsource/crimson-text/400.css";
+@import "@fontsource/crimson-text/600.css";
+@import "@fontsource/crimson-text/700.css";
+@import "@fontsource/source-sans-3/400.css";
+@import "@fontsource/source-sans-3/500.css";
+@import "@fontsource/source-sans-3/600.css";
+
+@theme {
+  --font-serif: "Crimson Text", Georgia, serif;
+  --font-sans: "Source Sans 3", system-ui, sans-serif;
+
+  --color-cream-50: #fefcf8;
+  --color-cream-100: #faf6ee;
+  --color-cream-200: #f3ebe0;
+  --color-cream-300: #e8dbc8;
+  --color-cream-400: #d9c8ac;
+  --color-cream-500: #c8b28f;
+  --color-cream-600: #b09873;
+  --color-cream-700: #907a5a;
+  --color-cream-800: #756148;
+  --color-cream-900: #604f3b;
+
+  --color-charcoal-50: #f5f4f2;
+  --color-charcoal-100: #e8e5e1;
+  --color-charcoal-200: #d0cbc4;
+  --color-charcoal-300: #ada397;
+  --color-charcoal-400: #8f8475;
+  --color-charcoal-500: #756d5d;
+  --color-charcoal-600: #615849;
+  --color-charcoal-700: #50483d;
+  --color-charcoal-800: #443d34;
+  --color-charcoal-900: #3a342d;
+
+  --color-terracotta-500: #c66b4b;
+  --color-terracotta-600: #b05a3f;
+  --color-sage-500: #7a9e7e;
+  --color-sage-600: #658569;
+  --color-gold-500: #c9a84c;
+  --color-gold-600: #b09240;
+
+  --color-catholic: #8b1538;
+  --color-protestant: #1b4f72;
+  --color-orthodox: #4a2c6e;
+  --color-other: #5d5d5d;
+  --color-ecumenical: #2d6a4f;
+
+  --radius-sm: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+}
+
+:root {
+  --background: var(--color-cream-50);
+  --foreground: var(--color-charcoal-900);
+  --card: var(--color-cream-50);
+  --card-foreground: var(--color-charcoal-900);
+  --primary: var(--color-terracotta-600);
+  --primary-foreground: var(--color-cream-50);
+  --secondary: var(--color-cream-200);
+  --secondary-foreground: var(--color-charcoal-900);
+  --muted: var(--color-cream-100);
+  --muted-foreground: var(--color-charcoal-500);
+  --accent: var(--color-sage-500);
+  --accent-foreground: var(--color-cream-50);
+  --border: var(--color-cream-300);
+  --ring: var(--color-terracotta-500);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: var(--color-charcoal-900);
+    --foreground: var(--color-cream-50);
+    --card: var(--color-charcoal-800);
+    --card-foreground: var(--color-cream-50);
+    --primary: var(--color-terracotta-500);
+    --primary-foreground: var(--color-charcoal-900);
+    --secondary: var(--color-charcoal-700);
+    --secondary-foreground: var(--color-cream-100);
+    --muted: var(--color-charcoal-800);
+    --muted-foreground: var(--color-charcoal-400);
+    --accent: var(--color-sage-500);
+    --accent-foreground: var(--color-charcoal-900);
+    --border: var(--color-charcoal-600);
+    --ring: var(--color-terracotta-500);
+  }
+}
+
+* {
+  border-color: var(--border);
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-serif);
+  font-weight: 600;
+}
+
+@layer utilities {
+  .text-balance { text-wrap: balance; }
+  .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+  .scrollbar-hide::-webkit-scrollbar { display: none; }
+}
