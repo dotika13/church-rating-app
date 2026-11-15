@@ -8,6 +8,9 @@ import { Church } from "@/db/schema";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { RatingSummary } from "@/components/rating/RatingSummary";
+import { useMyRating } from "@/hooks/useChurches";
+import { useRealtimeRatings } from "@/hooks/useRealtimeRatings";
 
 interface ChurchModalProps {
   church: (Church & {
@@ -26,6 +29,9 @@ interface ChurchModalProps {
 }
 
 export function ChurchModal({ church, onClose }: ChurchModalProps) {
+  const { data: myRating } = useMyRating(church?.id || "", !!church);
+  useRealtimeRatings(church?.id || "", !!church);
+
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
     document.addEventListener("keydown", handleEscape);
@@ -53,7 +59,7 @@ export function ChurchModal({ church, onClose }: ChurchModalProps) {
                 {church.address && <span>{church.address}</span>}
                 {hasRating && score && (
                   <span className="flex items-center gap-1 font-medium text-foreground">
-                    <svg className="w-4 h-4 text-gold-500" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+                    <svg className="w-4 h-4 text-gold-500" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8-2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
                     {score} ({church.ratingCount} reviews)
                   </span>
                 )}
@@ -94,13 +100,7 @@ export function ChurchModal({ church, onClose }: ChurchModalProps) {
           </TabsContent>
 
           <TabsContent value="ratings" className="p-4 overflow-y-auto">
-            <div className="space-y-4 text-center py-8">
-              <p className="text-muted-foreground">Ratings tab - coming soon</p>
-              <p className="text-sm text-muted-foreground">Sign in to rate this church</p>
-              <Link href="/login" className="inline-block mt-4">
-                <Button>Sign In to Rate</Button>
-              </Link>
-            </div>
+            <RatingSummary church={church} myRating={myRating?.rating ?? null} />
           </TabsContent>
 
           <TabsContent value="media" className="p-4 overflow-y-auto">

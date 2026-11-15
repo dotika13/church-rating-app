@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { MapView } from "@/components/map/MapView";
 import { ChurchModal } from "@/components/church/ChurchModal";
 import { useChurches } from "@/hooks/useChurches";
+import { useRealtimeChurches } from "@/hooks/useRealtimeRatings";
 import { useMapStore } from "@/lib/store/mapStore";
 import { MapBounds } from "@/lib/query/keys";
 import Link from "next/link";
@@ -14,7 +15,10 @@ export function MapPageClient() {
   const [bounds, setBounds] = useState<MapBounds | null>(null);
 
   // Fetch churches for current viewport
-  const { data, refetch } = useChurches({ bounds: bounds || undefined, enabled: !!bounds });
+  const { data } = useChurches({ bounds: bounds || undefined, enabled: !!bounds });
+
+  // Realtime updates for churches in current group (null = public)
+  useRealtimeChurches(null, true);
 
   useEffect(() => {
     if (data?.churches) setChurches(data.churches);
@@ -25,10 +29,6 @@ export function MapPageClient() {
     const debounced = setTimeout(() => setBounds(viewport), 300);
     return () => clearTimeout(debounced);
   }, [viewport]);
-
-  const handlePinClick = (church: any) => {
-    setSelectedChurchId(church.id);
-  };
 
   return (
     <div className="relative w-full h-screen">
